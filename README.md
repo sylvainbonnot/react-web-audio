@@ -11,7 +11,7 @@ This is an example application that shows how to visualise audio from the microp
 Clone or download the project from GitHub, change into the directory and install the dependencies.
 
 ```bash
-git clone https://github.com/philnash/react-web-audio.git
+git clone https://github.com/sylvainbonnot/react-web-audio.git
 cd react-web-audio
 npm install
 ```
