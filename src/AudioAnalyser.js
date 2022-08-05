@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import AudioFreqVisualizer from './AudioFreqVisualizer';
 import AudioVisualiser from './AudioVisualiser';
+
 
 class AudioAnalyser extends Component {
   constructor(props) {
     super(props);
-    this.state = { audioData: new Uint8Array(0) };
+    this.state = { audioData: new Uint8Array(0), audioFreqData: new Uint8Array(0) };
     this.tick = this.tick.bind(this);
   }
 
@@ -13,6 +15,8 @@ class AudioAnalyser extends Component {
       window.webkitAudioContext)();
     this.analyser = this.audioContext.createAnalyser();
     this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+    this.dataFreqArray = new Uint8Array(this.analyser.frequencyBinCount);
+
     this.source = this.audioContext.createMediaStreamSource(this.props.audio);
     this.source.connect(this.analyser);
     this.rafId = requestAnimationFrame(this.tick);
@@ -20,7 +24,11 @@ class AudioAnalyser extends Component {
 
   tick() {
     this.analyser.getByteTimeDomainData(this.dataArray);
-    this.setState({ audioData: this.dataArray });
+    this.analyser.getByteFrequencyData(this.dataFreqArray);
+
+    this.setState({ audioData: this.dataArray, audioFreqData: this.dataFreqArray });
+    //this.setState({ audioFreqData: this.dataFreqArray });
+
     this.rafId = requestAnimationFrame(this.tick);
   }
 
@@ -31,7 +39,12 @@ class AudioAnalyser extends Component {
   }
 
   render() {
-    return <AudioVisualiser audioData={this.state.audioData} />;
+    return (
+      <React.Fragment>
+        <AudioFreqVisualizer audioFreqData={this.state.audioFreqData} />
+        <AudioVisualiser audioData={this.state.audioData} />
+      </React.Fragment>
+    )
   }
 }
 
